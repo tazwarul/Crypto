@@ -1,0 +1,481 @@
+================================================================================
+                        CRYPTOGRAPHY LAB REPORT
+================================================================================
+
+
+--------------------------------------------------------------------------------
+Experiment E1-1: Caesar Cipher
+--------------------------------------------------------------------------------
+Objective:
+  - To encrypt and decrypt a message using the Caesar cipher technique.
+  - To understand the concept of shift-based substitution in classical cryptography.
+
+Theory:
+  Caesar cipher is one of the oldest and simplest encryption techniques, named
+  after Julius Caesar who used it for secret communication. It is a type of
+  substitution cipher where each letter of the plaintext is replaced by a letter
+  found by shifting it a fixed number of positions down or up the alphabet.
+  For example, with a shift of 3, 'A' becomes 'D', 'B' becomes 'E', and so on.
+  The cipher wraps around, so 'Z' with shift 3 becomes 'C'. Non-alphabetic
+  characters remain unchanged. Mathematically, encryption is:
+    C = (P + shift) mod 26
+  and decryption is:
+    P = (C - shift + 26) mod 26
+  Although easy to implement, Caesar cipher offers very weak security since
+  there are only 26 possible shift values, making it vulnerable to brute-force.
+
+Algorithm:
+  Encryption:
+  1. Read plaintext and shift value from the user.
+  2. For each character in the plaintext:
+     a. If uppercase: C = (ord(char) - 65 + shift) mod 26 + 65
+     b. If lowercase: C = (ord(char) - 97 + shift) mod 26 + 97
+     c. If non-alphabetic: keep as is.
+  3. Concatenate results to form the ciphertext.
+  Decryption:
+  4. Apply encryption with a negative shift value (-shift).
+  5. Print plaintext, ciphertext, and decrypted text.
+
+
+--------------------------------------------------------------------------------
+Experiment E1-2: One-Time Pad (OTP)
+--------------------------------------------------------------------------------
+Objective:
+  - To encrypt and decrypt a message using the One-Time Pad cipher.
+  - To understand the concept of perfect secrecy through random key usage.
+
+Theory:
+  The One-Time Pad (OTP) is theoretically the only provably unbreakable
+  encryption scheme, as proven by Claude Shannon in 1949. It requires a
+  truly random key that is at least as long as the plaintext, used only once,
+  and kept completely secret. Each character of the plaintext is combined with
+  the corresponding character of the key using modular addition:
+    C = (P + K) mod 26
+  Decryption reverses this by subtracting the key:
+    P = (C - K + 26) mod 26
+  Security of OTP depends entirely on randomness and single-use of the key.
+  If the key is reused or predictable, the cipher becomes completely insecure.
+  In practice, secure key distribution is its main challenge.
+
+Algorithm:
+  1. Read plaintext from the user; convert all characters to uppercase.
+  2. Generate a random key of the same length using random letter selection.
+  3. Encryption:
+     a. For each character pair (plaintext[i], key[i]):
+        C[i] = (ord(plaintext[i]) - 65 + ord(key[i]) - 65) mod 26 + 65
+  4. Decryption:
+     a. For each character pair (cipher[i], key[i]):
+        P[i] = (ord(cipher[i]) - ord(key[i]) + 26) mod 26 + 65
+  5. Print the key, encrypted text, and decrypted text.
+
+
+--------------------------------------------------------------------------------
+Experiment E1-3: Monoalphabetic Substitution Cipher
+--------------------------------------------------------------------------------
+Objective:
+  - To encrypt and decrypt a message using a monoalphabetic substitution cipher.
+  - To understand fixed random mapping between plaintext and ciphertext alphabets.
+
+Theory:
+  A monoalphabetic substitution cipher is an improvement over Caesar cipher where
+  instead of a fixed shift, each letter of the alphabet is mapped to a completely
+  different and unique letter using a randomly generated key alphabet. The key is
+  a permutation of all 26 letters, so no two plaintext letters map to the same
+  ciphertext letter. For example:
+    Plaintext:  A B C D E ... Z
+    Ciphertext: M T X Q A ... K  (random permutation)
+  This gives 26! possible keys, making brute-force practically impossible.
+  However, it is still vulnerable to frequency analysis, since the statistical
+  distribution of letters in the ciphertext mirrors that of the language.
+  Decryption is done by reversing the substitution mapping.
+
+Algorithm:
+  1. Generate a random permutation of the 26 uppercase letters as the cipher map.
+  2. Read plaintext from the user; convert to uppercase.
+  3. Encryption:
+     a. For each character, look up its substitute in the cipher map.
+     b. Non-alphabetic characters remain unchanged.
+  4. Decryption:
+     a. Reverse the cipher map (swap keys and values).
+     b. For each ciphertext character, find the original letter.
+  5. Print the cipher mapping, encrypted text, and decrypted text.
+
+
+--------------------------------------------------------------------------------
+Experiment E1-4: GCD Using Euclidean Algorithm
+--------------------------------------------------------------------------------
+Objective:
+  - To compute the GCD of two numbers using the Euclidean Algorithm.
+  - To understand iterative remainder-based GCD computation.
+
+Theory:
+  The Greatest Common Divisor (GCD) of two integers is the largest positive
+  integer that divides both numbers without leaving a remainder. The Euclidean
+  Algorithm, proposed by the Greek mathematician Euclid around 300 BC, is the
+  oldest known algorithm and computes GCD efficiently. It is based on the
+  principle that:
+    GCD(a, b) = GCD(b, a mod b)
+  The algorithm repeatedly replaces the pair (a, b) with (b, a mod b) until
+  b becomes 0. At that point, a holds the GCD. This approach is much faster
+  than trial division and runs in O(log(min(a, b))) time. GCD computation is
+  fundamental in cryptography — particularly for checking coprimality conditions
+  in RSA, modular inverse computation, and key generation.
+
+Algorithm:
+  1. Read two integers a and b from the user.
+  2. While b is not zero:
+     a. Compute remainder = a mod b
+     b. Set a = b
+     c. Set b = remainder
+  3. When b = 0, a contains the GCD.
+  4. Print GCD(a, b).
+
+
+--------------------------------------------------------------------------------
+Experiment E1-5: Brute-Force Attack on Caesar Cipher
+--------------------------------------------------------------------------------
+Objective:
+  - To decrypt a Caesar cipher message using a brute-force attack.
+  - To understand how exhaustive key search breaks simple ciphers.
+
+Theory:
+  A brute-force attack is a cryptanalysis technique that systematically tries
+  all possible keys until the correct one is found. Since Caesar cipher uses
+  only a shift value between 0 and 25, there are only 26 possible keys. An
+  attacker can try all 26 shifts on the ciphertext and inspect each result to
+  identify the readable (meaningful) plaintext — no prior knowledge of the key
+  is needed. This demonstrates a critical weakness of Caesar cipher: its small
+  key space. A strong cipher must have a key space large enough to make
+  exhaustive search computationally infeasible (e.g., AES with 2^128 keys).
+  This experiment illustrates why key space size is essential for security.
+
+Algorithm:
+  1. Read plaintext and shift value; encrypt to generate ciphertext.
+  2. Display the ciphertext.
+  3. Brute-force decryption loop (shift = 0 to 25):
+     a. For each shift, apply Caesar decryption to the ciphertext.
+     b. Print the shift value and the resulting decrypted string.
+  4. The human observer identifies the correct plaintext by readability.
+  5. Correct result appears when the loop reaches the original shift value.
+
+
+--------------------------------------------------------------------------------
+Experiment E1-6: Playfair Cipher
+--------------------------------------------------------------------------------
+Objective:
+  - To encrypt and decrypt a message using the Playfair cipher.
+  - To understand digraph-based substitution using a 5x5 key matrix.
+
+Theory:
+  The Playfair cipher, invented by Charles Wheatstone in 1854, is a digraph
+  substitution cipher — it encrypts two letters at a time instead of one.
+  A 5x5 matrix is constructed using a keyword (removing duplicate letters),
+  followed by remaining alphabet letters. J is merged with I to fit 25 letters.
+  Plaintext is split into pairs (digraphs); if both letters in a pair are the
+  same, an 'X' is inserted between them. Encryption follows three rules:
+    1. Same row: each letter is replaced by the letter to its right (circular).
+    2. Same column: each letter is replaced by the letter below it (circular).
+    3. Rectangle: each letter is replaced by the letter in its row but in
+       the other letter's column.
+  Decryption reverses rules 1 and 2; rule 3 remains the same. Playfair is
+  significantly harder to break than simple substitution ciphers.
+
+Algorithm:
+  1. Build a 5x5 matrix from the keyword: fill keyword letters (unique, no J),
+     then remaining alphabet letters.
+  2. Prepare plaintext: uppercase, replace J with I, remove spaces.
+  3. Split into digraphs: insert X if both letters in a pair are equal;
+     append X if the last pair is incomplete.
+  4. Encryption — for each digraph (a, b):
+     a. Same row: shift each letter one position right (mod 5).
+     b. Same column: shift each letter one position down (mod 5).
+     c. Rectangle: swap column indices of the two letters.
+  5. Decryption reverses shifts in rules (a) and (b); rule (c) stays same.
+  6. Print key matrix, encrypted text, and decrypted text.
+
+
+--------------------------------------------------------------------------------
+Experiment E1-7: Hill Cipher (2x2)
+--------------------------------------------------------------------------------
+Objective:
+  - To encrypt and decrypt a message using the 2x2 Hill cipher.
+  - To apply matrix multiplication and modular inverse in cryptography.
+
+Theory:
+  The Hill cipher, developed by Lester Hill in 1929, is a polygraphic
+  substitution cipher based on linear algebra. It encrypts blocks of letters
+  simultaneously using matrix multiplication modulo 26. For a 2x2 key matrix K
+  and a plaintext vector P (two letters as numbers 0-25):
+    Ciphertext vector C = K * P (mod 26)
+  For decryption, the inverse of K modulo 26 must exist, which requires that
+  det(K) and 26 are coprime (gcd(det(K), 26) = 1). The inverse matrix is:
+    K_inv = det_inv * adj(K) (mod 26)
+  where det_inv is the modular inverse of det(K) mod 26, and adj(K) is the
+  adjugate (classical adjoint) of K. Hill cipher provides stronger security
+  than monoalphabetic ciphers as it encrypts multiple letters at once,
+  making frequency analysis significantly harder.
+
+Algorithm:
+  1. Read message and 2x2 key matrix entries (a, b, c, d) from user.
+  2. If message length is odd, append 'X' for padding.
+  3. Encryption — for each pair of letters (P1, P2):
+     a. Convert to numbers: n1 = ord(P1)-65, n2 = ord(P2)-65.
+     b. Compute [C1, C2] = K * [n1, n2] mod 26.
+     c. Convert back to letters and append to ciphertext.
+  4. Decryption:
+     a. Compute det(K) mod 26; find its modular inverse using brute-force.
+     b. Compute adjugate matrix: adj = [[d, -b], [-c, a]].
+     c. Compute K_inv = (det_inv * adj) mod 26.
+     d. Apply K_inv to each ciphertext pair as in step 3.
+  5. Print key matrix, encrypted text, and decrypted text.
+
+
+--------------------------------------------------------------------------------
+Experiment E1-8: Transposition Cipher with Double Encryption
+--------------------------------------------------------------------------------
+Objective:
+  - To encrypt a message using a columnar transposition cipher.
+  - To apply double encryption for enhanced security.
+
+Theory:
+  A transposition cipher rearranges the characters of the plaintext without
+  changing them, unlike substitution ciphers that replace characters. In a
+  columnar transposition cipher, the plaintext is written row by row into a
+  grid with a fixed number of columns (determined by the key length), and the
+  columns are read out in an order dictated by the alphabetical ranking of
+  the key letters. For example, with key "ZEBRA":
+    Alphabetical order of key letters determines column reading order.
+  Double encryption applies the same transposition process twice on the
+  already-encrypted text. This increases the complexity of the resulting
+  ciphertext and makes cryptanalysis significantly harder, as the attacker
+  must break two layers of transposition. No character substitution occurs —
+  only their positions are scrambled.
+
+Algorithm:
+  1. Read message (convert to uppercase) and key from user.
+  2. Remove spaces from message; pad with 'X' to fill the grid completely.
+  3. Write the message row by row into a grid with len(key) columns.
+  4. Determine column reading order by sorting key letters alphabetically.
+  5. Read columns in that sorted order to produce the first ciphertext.
+  6. Repeat steps 3-5 on the first ciphertext to produce double-encrypted output.
+  7. Print original plaintext, single-encrypted, and double-encrypted results.
+
+
+--------------------------------------------------------------------------------
+Experiment E1-9: ElGamal Cryptosystem
+--------------------------------------------------------------------------------
+Objective:
+  - To encrypt and decrypt a message using the ElGamal cryptosystem.
+  - To understand asymmetric encryption based on discrete logarithm hardness.
+
+Theory:
+  The ElGamal cryptosystem, proposed by Taher ElGamal in 1985, is an asymmetric
+  key encryption algorithm based on the Diffie-Hellman key exchange. Its security
+  relies on the computational difficulty of solving the Discrete Logarithm Problem
+  (DLP): given g, p, and y = g^x mod p, it is computationally infeasible to
+  find x for large p. System parameters include a large prime p and a primitive
+  root g. The key generation is:
+    Private key: x (random integer)
+    Public key:  y = g^x mod p
+  Encryption uses a random session key k (chosen freshly each time):
+    c1 = g^k mod p,   c2 = (m * y^k) mod p
+  Decryption recovers the shared secret s = c1^x mod p, then:
+    m = c2 * s^(-1) mod p
+  ElGamal produces probabilistic ciphertext — the same message encrypted
+  twice gives different results due to the random k, enhancing security.
+
+Algorithm:
+  1. Read prime p, primitive root g, private key x, and message m.
+  2. Compute public key: y = g^x mod p.
+  3. Encryption:
+     a. Choose a random integer k in range [1, p-2].
+     b. Compute c1 = g^k mod p.
+     c. Compute c2 = (m * pow(y, k, p)) mod p.
+     d. Ciphertext is the pair (c1, c2).
+  4. Decryption:
+     a. Compute shared secret: s = c1^x mod p.
+     b. Compute modular inverse of s: s_inv = s^(-1) mod p.
+     c. Recover message: m = (c2 * s_inv) mod p.
+  5. Print public key, encrypted pair (c1, c2), and decrypted message.
+
+
+================================================================================
+
+
+--------------------------------------------------------------------------------
+Experiment E2-1: DES (Data Encryption Standard)
+--------------------------------------------------------------------------------
+Objective:
+  - To encrypt and decrypt a message using the DES symmetric-key algorithm.
+  - To understand block cipher principles and padding in modern encryption.
+
+Theory:
+  The Data Encryption Standard (DES) is a symmetric-key block cipher published
+  by NIST in 1977. It encrypts data in 64-bit blocks using a 56-bit key (with 8
+  parity bits, total key input is 64 bits) through a 16-round Feistel network
+  structure. In each round, the data block is split into two halves; a round
+  function involving expansion permutation, XOR with a round subkey, S-box
+  substitution, and P-box permutation is applied to the right half and XORed
+  with the left half, then the halves are swapped. Subkeys for each round are
+  derived from the original key via a key schedule. Since both encryption and
+  decryption use the same key (only subkey order is reversed), it is symmetric.
+  ECB (Electronic Codebook) mode encrypts each block independently. Because
+  the message may not align to 8-byte blocks, PKCS7 padding is added before
+  encryption and removed after decryption. DES is now considered insecure due
+  to its short key length but remains important for understanding block ciphers.
+
+Algorithm:
+  1. Read plaintext message and an exactly 8-character key from the user.
+  2. Encode both as bytes.
+  3. Encryption:
+     a. Apply PKCS7 padding to make message length a multiple of 8 bytes.
+     b. Create a DES cipher object in ECB mode with the given key.
+     c. Encrypt the padded message to get ciphertext bytes.
+  4. Decryption:
+     a. Create a new DES cipher object with the same key in ECB mode.
+     b. Decrypt the ciphertext bytes.
+     c. Remove PKCS7 padding to recover original message.
+  5. Print original message, encrypted text (in hex), and decrypted text.
+
+
+--------------------------------------------------------------------------------
+Experiment E2-2: RSA Algorithm
+--------------------------------------------------------------------------------
+Objective:
+  - To encrypt and decrypt a message using the RSA public-key algorithm.
+  - To understand key generation using prime factorization and modular inverse.
+
+Theory:
+  RSA (Rivest-Shamir-Adleman), introduced in 1977, is the most widely used
+  asymmetric cryptosystem. Its security is based on the computational difficulty
+  of factoring the product of two large prime numbers. Key generation steps:
+    1. Choose two distinct large primes p and q.
+    2. Compute n = p * q  (modulus, public).
+    3. Compute Euler's totient: phi(n) = (p-1) * (q-1).
+    4. Choose e such that 1 < e < phi(n) and gcd(e, phi(n)) = 1 (public exponent).
+    5. Compute d = e^(-1) mod phi(n) using Extended Euclidean Algorithm (private).
+  Public key: (e, n)   Private key: (d, n)
+  Encryption:  C = M^e mod n
+  Decryption:  M = C^d mod n
+  The message M must be a number less than n. RSA is used in digital signatures,
+  SSL/TLS certificates, and secure key exchange. For real-world use, keys must
+  be at least 2048 bits; small primes used here are for demonstration only.
+
+Algorithm:
+  1. Read primes p and q, public exponent e, and numeric message m.
+  2. Compute n = p * q and phi = (p-1) * (q-1).
+  3. Compute private key d = modular inverse of e mod phi
+     (using Python's built-in pow(e, -1, phi)).
+  4. Encryption: c = pow(m, e, n).
+  5. Decryption: m_dec = pow(c, d, n).
+  6. Print public key (e, n), private key (d, n), ciphertext, and decrypted value.
+
+
+--------------------------------------------------------------------------------
+Experiment E2-3: Diffie-Hellman Key Exchange
+--------------------------------------------------------------------------------
+Objective:
+  - To simulate the Diffie-Hellman key exchange protocol.
+  - To understand how two parties derive a shared secret over a public channel.
+
+Theory:
+  The Diffie-Hellman (DH) key exchange, proposed by Whitfield Diffie and Martin
+  Hellman in 1976, was the first practical public-key protocol. It allows two
+  parties (Alice and Bob) to securely establish a shared secret key over an
+  insecure public channel without ever transmitting the secret itself. The
+  security is based on the hardness of the Discrete Logarithm Problem.
+  Public parameters: a large prime p and a primitive root g (both known to all).
+  Protocol:
+    Alice chooses private key a; computes public value A = g^a mod p.
+    Bob chooses private key b; computes public value B = g^b mod p.
+    Alice and Bob exchange A and B over the public channel.
+    Alice computes shared key: K = B^a mod p = g^(ab) mod p.
+    Bob computes shared key:   K = A^b mod p = g^(ab) mod p.
+  Both arrive at the same K without ever transmitting it. An eavesdropper who
+  knows p, g, A, and B cannot easily determine K without solving the DLP.
+  This shared key K can then be used as a symmetric encryption key.
+
+Algorithm:
+  1. Read public prime p and primitive root g.
+  2. Read Alice's private key a and Bob's private key b.
+  3. Compute Alice's public value: A = pow(g, a, p).
+  4. Compute Bob's public value:   B = pow(g, b, p).
+  5. Print A and B (exchanged over public channel).
+  6. Alice computes: key1 = pow(B, a, p).
+  7. Bob computes:   key2 = pow(A, b, p).
+  8. Print both shared keys and verify key1 == key2.
+
+
+--------------------------------------------------------------------------------
+Experiment E2-4: Modular Arithmetic Using Primitive Root
+--------------------------------------------------------------------------------
+Objective:
+  - To perform modular arithmetic operations using a primitive root.
+  - To understand the role of primitive roots in number theory and cryptography.
+
+Theory:
+  Modular arithmetic, often called "clock arithmetic," is the foundation of
+  modern cryptography. In modular arithmetic, numbers wrap around after reaching
+  a modulus value m. The notation a mod m gives the remainder of a divided by m.
+  A primitive root (or generator) g of a prime p is an integer such that its
+  successive powers modulo p generate all nonzero residues {1, 2, ..., p-1}.
+  Formally: {g^1 mod p, g^2 mod p, ..., g^(p-1) mod p} = {1, 2, ..., p-1}.
+  This property is critical in cryptographic algorithms like Diffie-Hellman and
+  ElGamal because it ensures that the group of integers mod p is cyclic and that
+  any element can be reached as a power of g. Basic modular operations include:
+    Addition:       (a + b) mod p
+    Subtraction:    (a - b + p) mod p
+    Multiplication: (a * b) mod p
+    Exponentiation: g^a mod p  (computed efficiently using fast exponentiation)
+
+Algorithm:
+  1. Read prime number p, primitive root g, and integers a and b from user.
+  2. Compute and print:
+     a. Addition:       (a + b) mod p
+     b. Subtraction:    (a - b) mod p
+     c. Multiplication: (a * b) mod p
+     d. Exponentiation: pow(g, a, p)
+  3. Verify primitive root property:
+     a. For i in range 1 to p-1: compute g^i mod p and print each result.
+     b. Confirm that all values {1, 2, ..., p-1} appear exactly once.
+  4. Display all computed results.
+
+
+--------------------------------------------------------------------------------
+Experiment E2-5: Extended Euclidean Algorithm
+--------------------------------------------------------------------------------
+Objective:
+  - To compute GCD of two numbers using the Extended Euclidean Algorithm.
+  - To find Bezout coefficients x and y such that ax + by = GCD(a, b).
+
+Theory:
+  The Extended Euclidean Algorithm (EEA) is an extension of the basic Euclidean
+  Algorithm that, in addition to computing GCD(a, b), also finds two integers
+  x and y (called Bezout coefficients) satisfying Bezout's Identity:
+    a*x + b*y = GCD(a, b)
+  This is especially important in cryptography for computing modular inverses.
+  If GCD(a, m) = 1 (a and m are coprime), then x from the equation a*x + m*y = 1
+  is the modular inverse of a modulo m, i.e., a*x ≡ 1 (mod m). This modular
+  inverse is used in RSA key generation (finding d from e), Hill cipher
+  decryption (finding matrix inverse mod 26), and ElGamal decryption.
+  The algorithm works recursively:
+    Base case:  if b = 0, return (a, 1, 0).
+    Recursive:  call EEA(b, a mod b) → (gcd, x1, y1).
+    Update:     x = y1,  y = x1 - (a // b) * y1.
+  This back-substitution tracks the coefficients through each recursive step.
+
+Algorithm:
+  1. Read two integers a and b from the user.
+  2. Define recursive function extended_gcd(a, b):
+     a. If b == 0: return (a, 1, 0).
+     b. Recursively call: (gcd, x1, y1) = extended_gcd(b, a mod b).
+     c. Update coefficients: x = y1,  y = x1 - (a // b) * y1.
+     d. Return (gcd, x, y).
+  3. Call extended_gcd(a, b) and store results.
+  4. Print GCD, coefficients x and y.
+  5. Verify: print a*x + b*y and confirm it equals GCD.
+
+
+================================================================================
+                              END OF LAB REPORT
+================================================================================
